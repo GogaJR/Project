@@ -1,10 +1,8 @@
 package com.project.mgm;
 
 import com.project.mgm.onlineBanking.*;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
+
+import java.util.*;
 
 public class Database {
     private static List<Bank> banks;
@@ -39,8 +37,17 @@ public class Database {
         users.add(user);
     }
 
-    public void createAccount(String mail, String password) {
+    private void createAccount(String mail, String password) {
         accounts.put(mail, password);
+    }
+
+    public boolean checkAccount(String mail, String password) {
+        if(!accounts.containsKey(mail)) {
+            createAccount(mail, password);
+            return true;
+        }
+
+        return false;
     }
 
     public void getBankList() {
@@ -56,7 +63,15 @@ public class Database {
     }
 
     public boolean checkLogin(String mail, String password) {
-        //TODO
+        Set<String> mails = accounts.keySet();
+        for(String m : mails) {
+            if(m.equals(mail)) {
+                if(accounts.get(m).equals(password)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 }

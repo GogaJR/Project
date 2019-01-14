@@ -11,8 +11,9 @@ public class Main {
     private static int userId = 0;
 
     public static void main(String[] args) {
+        System.out.println("\t\t\t\t\tWelcome To MGM Online Banking");
+
         while(true) {
-            System.out.println("\t\t\t\t\tWelcome To MGM Online Banking");
             System.out.println("(L) Login");
             System.out.println("(R) Registration");
             System.out.println("(E) Exit");
@@ -74,18 +75,25 @@ public class Main {
         System.out.print("City of Living: ");
         String livingCity = scanner.next();
 
-        System.out.print("E-Mail: ");
-        String mail = scanner.next();
+        String mail, password;
+        while(true) {
+            System.out.print("E-Mail: ");
+            mail = scanner.next();
 
-        System.out.print("Password: ");
-        String password = scanner.next();
+            System.out.print("Password: ");
+            password = scanner.next();
+
+            if(db.checkAccount(mail, password)) {
+                break;
+            } else {
+                System.out.println("There is an account with this mail!\n");
+            }
+        }
 
         User user = new User(++userId, name, surname, sex, LocalDate.of(year, month, day),
                 birthCountry, birthCity, livingCountry, livingCity, mail, password);
         db.addUser(user);
-        db.createAccount(mail, password);
-
-        System.out.println("Your registration is done successfully!");
+        System.out.println("Your registration is done successfully!\n");
     }
 
     private static int inputNumber(String inputMessage, int lowerBoard, int upperBoard) {
