@@ -1,5 +1,7 @@
 package com.project.mgm.onlineBanking;
 
+import java.util.Map;
+
 public class Bank {
     private String name;
     private String address;
@@ -8,8 +10,10 @@ public class Bank {
     private String mail;
     private String workingHours;
     private String daysOff;
+    private Map<String, String> loanList;
 
-    public Bank(String name, String address, String phone, String fax, String mail, String workingHours, String daysOff) {
+    public Bank(String name, String address, String phone, String fax, String mail, String workingHours, String daysOff,
+                Map<String, String> loanList) {
         this.name = name;
         this.address = address;
         this.phone = phone;
@@ -17,6 +21,15 @@ public class Bank {
         this.mail = mail;
         this.workingHours = workingHours;
         this.daysOff = daysOff;
+        this.loanList = loanList;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Map<String, String> getLoanList() {
+        return this.loanList;
     }
 
     @Override
@@ -27,7 +40,7 @@ public class Bank {
                 "Phone: " + phone + ", " +
                 "Fax: " + fax + "\n" +
                 "E-Mail: " + mail + "\n" +
-                "Working Hours: " + workingHours + ", " +
-                "Days Off: " + daysOff;
+                "Working Hours: " + workingHours + "\n" +
+                "Days Off: " + daysOff + "\n";
     }
 }
