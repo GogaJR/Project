@@ -1,5 +1,7 @@
 package com.project.mgm;
 
+import com.project.mgm.onlineBanking.database.Database;
+
 import java.util.Scanner;
 
 public class AppUse {

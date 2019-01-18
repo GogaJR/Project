@@ -1,14 +1,13 @@
 package com.project.mgm;
 
-import com.project.mgm.onlineBanking.User;
+import com.project.mgm.onlineBanking.database.DatabaseConnection;
+import com.project.mgm.onlineBanking.user.User;
 import java.util.Scanner;
-import java.time.LocalDate;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static AppUse appUse = new AppUse();
-    private static Database db = new Database();
-    private static int userId = 0;
+    private static DatabaseConnection connection = new DatabaseConnection();
 
     public static void main(String[] args) {
         System.out.println("\t\t\t\t\tWelcome To MGM Online Banking");
@@ -42,10 +41,8 @@ public class Main {
         System.out.print("Password: ");
         String password = scanner.next();
 
-        if(db.checkLogin(mail, password)) {
+        if(connection.checkLogin(mail, password)) {
             appUse.start();
-        } else {
-            System.out.println("Wrong e-mail or password! Try again.\n");
         }
     }
 
@@ -56,12 +53,20 @@ public class Main {
         System.out.print("Surname: ");
         String surname = scanner.next();
 
-        System.out.print("Sex: ");
-        String sex = scanner.next();
+        String sex;
+        do {
+            System.out.print("Sex (M) Male, (F) Female: ");
+            sex = scanner.next().toUpperCase();
 
-        int year = inputNumber("Year of Birth: ", 1900, 1998);
-        int month = inputNumber("Month of Birth: ", 1, 12);
-        int day = inputNumber("Day of Birth: ", 1, 31);
+            if(!(sex.equals("M") || sex.equals("F"))) {
+                System.out.println("Enter Right Command!");
+                continue;
+            }
+        }while (!(sex.equals("M") || sex.equals("F")));
+
+        int year = inputNumber("Year of Birth: ");
+        int month = inputNumber("Month of Birth: ");
+        int day = inputNumber("Day of Birth: ");
 
         System.out.print("Country of Birth: ");
         String birthCountry = scanner.next();
@@ -75,6 +80,9 @@ public class Main {
         System.out.print("City of Living: ");
         String livingCity = scanner.next();
 
+        System.out.print("Passport Serial Number: ");
+        String serialNumber = scanner.next();
+
         String mail, password;
         while(true) {
             System.out.print("E-Mail: ");
@@ -83,20 +91,17 @@ public class Main {
             System.out.print("Password: ");
             password = scanner.next();
 
-            if(db.checkAccount(mail, password)) {
+            if(connection.checkAccount(mail)) {
                 break;
-            } else {
-                System.out.println("There is an account with this mail!\n");
             }
         }
 
-        User user = new User(++userId, name, surname, sex, LocalDate.of(year, month, day),
-                birthCountry, birthCity, livingCountry, livingCity, mail, password);
-        db.addUser(user);
-        System.out.println("Your registration is done successfully!\n");
+        User user = new User(name, surname, sex, year+"-"+month+"-"+day,
+                birthCountry, birthCity, livingCountry, livingCity, serialNumber, mail, password);
+        connection.createUser(user);
     }
 
-    private static int inputNumber(String inputMessage, int lowerBoard, int upperBoard) {
+    private static int inputNumber(String inputMessage) {
         int number = 0;
         do {
             System.out.print(inputMessage);
@@ -107,11 +112,7 @@ public class Main {
                 System.out.println("Enter an integer!");
                 continue;
             }
-
-            if(number < lowerBoard || number > upperBoard) {
-                System.out.println("Enter valid number from " + lowerBoard + " to " + upperBoard + "!");
-            }
-        }while(number < lowerBoard || number > upperBoard);
+        }while(number <= 0);
 
         return number;
     }

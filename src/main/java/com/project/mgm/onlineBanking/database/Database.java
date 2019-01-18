@@ -1,6 +1,7 @@
-package com.project.mgm;
+package com.project.mgm.onlineBanking.database;
 
-import com.project.mgm.onlineBanking.*;
+import com.project.mgm.onlineBanking.bank.Bank;
+import com.project.mgm.onlineBanking.user.User;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -41,9 +42,6 @@ public class Database {
                     "Monday-Friday 09:15-16:45", "Saturday and Sunday", abbLoanList));
 
         users = new ArrayList<>();
-        users.add(new User(1, "Georgi", "Shahnazaryan", "Male", LocalDate.of(1998, 6, 11),
-                "Armenia", "Yerevan", "Armenia", "Yerevan",
-                "goga", "1234"));
 
         services = new ArrayList<>();
         services.add("Opening and servicing of accounts");
@@ -53,23 +51,6 @@ public class Database {
 
         accounts = new HashMap<>();
         accounts.put("goga", "1234");
-    }
-
-    public void addUser(User user) {
-        users.add(user);
-    }
-
-    private void createAccount(String mail, String password) {
-        accounts.put(mail, password);
-    }
-
-    public boolean checkAccount(String mail, String password) {
-        if(!accounts.containsKey(mail)) {
-            createAccount(mail, password);
-            return true;
-        }
-
-        return false;
     }
 
     public void getBankList() {
@@ -82,19 +63,6 @@ public class Database {
         for(String service : services) {
             System.out.println(service);
         }
-    }
-
-    public boolean checkLogin(String mail, String password) {
-        Set<String> mails = accounts.keySet();
-        for(String m : mails) {
-            if(m.equals(mail)) {
-                if(accounts.get(m).equals(password)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     public Bank getBank(String bankName) {

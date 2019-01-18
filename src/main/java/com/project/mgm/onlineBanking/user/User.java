@@ -1,4 +1,4 @@
-package com.project.mgm.onlineBanking;
+package com.project.mgm.onlineBanking.user;
 
 import java.time.LocalDate;
 
@@ -7,17 +7,18 @@ public class User {
     private String name;
     private String surname;
     private String sex;
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
     private String countryOfBirth;
     private String cityOfBirth;
     private String countryOfLiving;
     private String cityOfLiving;
+    private String passportSerialNumber;
     private String mail;
     private String password;
 
-    public User(int id, String name, String surname, String sex, LocalDate dateOfBirth,
-                String coutryOfBirth, String cityOfBirth, String countryOfLiving, String cityOfLiving, String mail, String password) {
-        this.id = id;
+    public User(String name, String surname, String sex, String dateOfBirth,
+                String coutryOfBirth, String cityOfBirth, String countryOfLiving, String cityOfLiving,
+                String passportSerialNumber, String mail, String password) {
         this.name = name;
         this.surname = surname;
         this.sex = sex;
@@ -26,8 +27,53 @@ public class User {
         this.cityOfBirth = cityOfBirth;
         this.countryOfLiving = countryOfLiving;
         this.cityOfLiving = cityOfLiving;
+        this.passportSerialNumber = passportSerialNumber;
         this.mail = mail;
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getCountryOfBirth() {
+        return countryOfBirth;
+    }
+
+    public String getCityOfBirth() {
+        return cityOfBirth;
+    }
+
+    public String getCountryOfLiving() {
+        return countryOfLiving;
+    }
+
+    public String getCityOfLiving() {
+        return cityOfLiving;
+    }
+
+    public String getPassportSerialNumber() {
+        return passportSerialNumber;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

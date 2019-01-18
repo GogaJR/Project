@@ -1,6 +1,7 @@
 package com.project.mgm;
 
-import com.project.mgm.onlineBanking.Bank;
+import com.project.mgm.onlineBanking.bank.Bank;
+import com.project.mgm.onlineBanking.database.Database;
 
 import java.util.Map;
 import java.util.Scanner;

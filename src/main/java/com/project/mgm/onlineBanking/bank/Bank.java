@@ -1,4 +1,4 @@
-package com.project.mgm.onlineBanking;
+package com.project.mgm.onlineBanking.bank;
 
 import java.util.Map;
 
