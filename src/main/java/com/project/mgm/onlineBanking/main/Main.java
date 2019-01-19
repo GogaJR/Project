@@ -16,7 +16,7 @@ public class Main {
             System.out.println("(R) Registration");
             System.out.println("(E) Exit");
 
-            String input = scanner.next().toUpperCase();
+            String input = scanner.nextLine().toUpperCase();
             switch (input) {
                 case "L":
                     login();
@@ -27,17 +27,17 @@ public class Main {
                 case "E":
                     return;
                 default:
-                    System.out.println("Enter right command!\n");
+                    System.out.println("Enter Right Command!\n");
             }
         }
     }
 
     private static void login() {
         System.out.print("E-Mail: ");
-        String mail = scanner.next();
+        String mail = scanner.nextLine();
 
         System.out.print("Password: ");
-        String password = scanner.next();
+        String password = scanner.nextLine();
 
         int id;
         if((id = databaseOperation.checkLogin(mail, password)) != 0) {
@@ -52,15 +52,15 @@ public class Main {
 
     private static void registration() {
         System.out.print("Name: ");
-        String name = scanner.next();
+        String name = scanner.nextLine();
 
         System.out.print("Surname: ");
-        String surname = scanner.next();
+        String surname = scanner.nextLine();
 
         String sex;
         do {
             System.out.print("Sex (M) Male, (F) Female: ");
-            sex = scanner.next().toUpperCase();
+            sex = scanner.nextLine().toUpperCase();
 
             if(!(sex.equals("M") || sex.equals("F"))) {
                 System.out.println("Enter Right Command!");
@@ -73,27 +73,27 @@ public class Main {
         int day = inputNumber("Day of Birth: ");
 
         System.out.print("Country of Birth: ");
-        String birthCountry = scanner.next();
+        String birthCountry = scanner.nextLine();
 
         System.out.print("City of Birth: ");
-        String birthCity = scanner.next();
+        String birthCity = scanner.nextLine();
 
         System.out.print("Country of Living: ");
-        String livingCountry = scanner.next();
+        String livingCountry = scanner.nextLine();
 
         System.out.print("City of Living: ");
-        String livingCity = scanner.next();
+        String livingCity = scanner.nextLine();
 
         System.out.print("Passport Serial Number: ");
-        String serialNumber = scanner.next();
+        String serialNumber = scanner.nextLine();
 
         String mail, password;
         while(true) {
             System.out.print("E-Mail: ");
-            mail = scanner.next();
+            mail = scanner.nextLine();
 
             System.out.print("Password: ");
-            password = scanner.next();
+            password = scanner.nextLine();
 
             if(databaseOperation.checkAccount(mail)) {
                 break;
@@ -116,7 +116,7 @@ public class Main {
                 number = scanner.nextInt();
             } else {
                 scanner.next();
-                System.out.println("Enter an integer!");
+                System.out.println("Enter Number!");
                 continue;
             }
         }while(number <= 0);

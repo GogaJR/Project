@@ -301,4 +301,22 @@ public class OperateDatabase {
 
         return userBanks;
     }
+
+    public List<String> getBankList() {
+        List<String> banks = new ArrayList<>();
+        String bankNameSql = "select name from bank";
+
+        Statement selectBankNameStatement;
+        try {
+            selectBankNameStatement = connection.createStatement();
+            ResultSet bankNameResultSet = selectBankNameStatement.executeQuery(bankNameSql);
+            while(bankNameResultSet.next()) {
+                banks.add(bankNameResultSet.getString("name"));
+            }
+        }catch (SQLException e) {
+            System.out.println("SQL Exception.");
+        }
+
+        return banks;
+    }
 }

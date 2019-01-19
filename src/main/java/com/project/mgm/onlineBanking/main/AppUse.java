@@ -1,6 +1,7 @@
 package com.project.mgm.onlineBanking.main;
 
 import com.project.mgm.onlineBanking.database.OperateDatabase;
+import com.project.mgm.onlineBanking.database.UseService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -8,6 +9,7 @@ import java.util.Scanner;
 public class AppUse {
     private static Scanner scanner = new Scanner(System.in);
     private static OperateDatabase databaseOperation = new OperateDatabase();
+    private static UseService useService = new UseService();
     private int userId;
 
     public AppUse(int userId) {
@@ -27,10 +29,10 @@ public class AppUse {
             System.out.println("(AS) Show Available Service List");
             System.out.println("(B) Show Balance(s)");
             System.out.println("(U) To Make Use of Service");
-            System.out.println("(C) Cooperate with Bank");
+            System.out.println("(O) Open Account");
             System.out.println("(Q) Quit");
 
-            String input = scanner.next().toUpperCase();
+            String input = scanner.nextLine().toUpperCase();
             switch (input) {
                 case "MB":
                     databaseOperation.showUserBankList(userId);
@@ -50,7 +52,7 @@ public class AppUse {
                         System.out.println("(C) Show Balance of Concrete Bank");
                         System.out.println("(A) All");
 
-                        input = scanner.next().toUpperCase();
+                        input = scanner.nextLine().toUpperCase();
                         switch (input) {
                             case "C":
                                 System.out.println("Choose Bank: ");
@@ -86,8 +88,8 @@ public class AppUse {
                     break;
                 case "U":
                     break;
-                case "C":
-                    //cooperate();
+                case "O":
+                    useService.openAccount();
                     break;
                 case "Q":
                     return;
@@ -99,13 +101,12 @@ public class AppUse {
 
     public void notCooperatedUser() {
         while(true) {
-            System.out.println("\n");
             System.out.println("(B) Show Available Bank List");
             System.out.println("(S) Show Available Service List");
-            System.out.println("(C) Cooperate with Bank");
+            System.out.println("(O) Open Account");
             System.out.println("(Q) Quit");
 
-            String input = scanner.next().toUpperCase();
+            String input = scanner.nextLine().toUpperCase();
             switch (input) {
                 case "B":
                     databaseOperation.showBankList();
@@ -113,9 +114,8 @@ public class AppUse {
                 case "S":
                     databaseOperation.showServiceList();
                     break;
-
-                case "C":
-                    //coopeate();
+                case "O":
+                    useService.openAccount();
                     break;
                 case "Q":
                     return;
