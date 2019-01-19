@@ -1,13 +1,12 @@
-package com.project.mgm;
+package com.project.mgm.onlineBanking.main;
 
-import com.project.mgm.onlineBanking.database.DatabaseConnection;
+import com.project.mgm.onlineBanking.database.OperateDatabase;
 import com.project.mgm.onlineBanking.user.User;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static AppUse appUse = new AppUse();
-    private static DatabaseConnection connection = new DatabaseConnection();
+    private static OperateDatabase databaseOperation = new OperateDatabase();
 
     public static void main(String[] args) {
         System.out.println("\t\t\t\t\tWelcome To MGM Online Banking");
@@ -24,7 +23,6 @@ public class Main {
                     break;
                 case "R":
                     registration();
-                    appUse.start();
                     break;
                 case "E":
                     return;
@@ -41,8 +39,14 @@ public class Main {
         System.out.print("Password: ");
         String password = scanner.next();
 
-        if(connection.checkLogin(mail, password)) {
-            appUse.start();
+        int id;
+        if((id = databaseOperation.checkLogin(mail, password)) != 0) {
+            AppUse appUse = new AppUse(id);
+            if(databaseOperation.checkUserBankBond(id)) {
+                appUse.cooperatedUser();
+            } else {
+                appUse.notCooperatedUser();
+            }
         }
     }
 
@@ -91,14 +95,17 @@ public class Main {
             System.out.print("Password: ");
             password = scanner.next();
 
-            if(connection.checkAccount(mail)) {
+            if(databaseOperation.checkAccount(mail)) {
                 break;
             }
         }
 
         User user = new User(name, surname, sex, year+"-"+month+"-"+day,
                 birthCountry, birthCity, livingCountry, livingCity, serialNumber, mail, password);
-        connection.createUser(user);
+        int userId = databaseOperation.createUser(user);
+
+        AppUse appUse = new AppUse(userId);
+        appUse.notCooperatedUser();
     }
 
     private static int inputNumber(String inputMessage) {

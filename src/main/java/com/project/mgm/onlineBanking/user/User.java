@@ -1,7 +1,5 @@
 package com.project.mgm.onlineBanking.user;
 
-import java.time.LocalDate;
-
 public class User {
     private int id;
     private String name;
