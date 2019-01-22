@@ -1,12 +1,15 @@
 package com.project.mgm.onlineBanking.main;
 
-import com.project.mgm.onlineBanking.database.OperateDatabase;
+import com.project.mgm.onlineBanking.database.BankOperateDatabase;
+import com.project.mgm.onlineBanking.database.UserOperateDatabase;
 import com.project.mgm.onlineBanking.user.User;
+
 import java.util.Scanner;
 
-public class Main {
+public class MainController {
     private static Scanner scanner = new Scanner(System.in);
-    private static OperateDatabase databaseOperation = new OperateDatabase();
+    private static UserOperateDatabase userDatabaseOperation = new UserOperateDatabase();
+    private static BankOperateDatabase bankDatabaseOperation = new BankOperateDatabase();
 
     public static void main(String[] args) {
         System.out.println("\t\t\t\t\tWelcome To MGM Online Banking");
@@ -40,13 +43,18 @@ public class Main {
         String password = scanner.nextLine();
 
         int id;
-        if((id = databaseOperation.checkLogin(mail, password)) != 0) {
-            AppUse appUse = new AppUse(id);
-            if(databaseOperation.checkUserBankBond(id)) {
-                appUse.cooperatedUser();
+        if((id = userDatabaseOperation.checkUserLogin(mail, password)) != 0) {
+            AppController appController = new AppController(id);
+            if(userDatabaseOperation.checkUserBankBond(id)) {
+                appController.cooperatedUser();
             } else {
-                appUse.notCooperatedUser();
+                appController.notCooperatedUser();
             }
+        } else if((id = bankDatabaseOperation.checkBankLogin(mail, password)) != 0) {
+            AppController appController = new AppController(id);
+            appController.bankMain();
+        } else {
+            System.out.println("Wrong E-Mail or Password!Try Again!\n");
         }
     }
 
@@ -95,17 +103,17 @@ public class Main {
             System.out.print("Password: ");
             password = scanner.nextLine();
 
-            if(databaseOperation.checkAccount(mail)) {
+            if(userDatabaseOperation.checkAccount(mail)) {
                 break;
             }
         }
 
         User user = new User(name, surname, sex, year+"-"+month+"-"+day,
                 birthCountry, birthCity, livingCountry, livingCity, serialNumber, mail, password);
-        int userId = databaseOperation.createUser(user);
+        int userId = userDatabaseOperation.createUser(user);
 
-        AppUse appUse = new AppUse(userId);
-        appUse.notCooperatedUser();
+        AppController appController = new AppController(userId);
+        appController.notCooperatedUser();
     }
 
     private static int inputNumber(String inputMessage) {

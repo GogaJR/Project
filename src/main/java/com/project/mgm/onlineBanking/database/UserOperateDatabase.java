@@ -5,20 +5,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class OperateDatabase {
-    private static final Connection connection = getConnection();
-
-    private static Connection getConnection() {
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3307/online_banking",
-                                                                "root",
-                                                                "");
-            return connection;
-        }catch (SQLException e) {
-            System.out.println("SQL Exception.");;
-            return null;
-        }
-    }
+public class UserOperateDatabase {
+    private static final Connection connection = DatabaseConnection.getConnection();
 
     public int createUser(User user) {
         String sql = "insert into user (name, surname, sex, date_of_birth, place_of_birth, place_of_living, " +
@@ -64,7 +52,7 @@ public class OperateDatabase {
         return 0;
     }
 
-    public int checkLogin(String enteredMail, String enteredPassword) {
+    public int checkUserLogin(String enteredMail, String enteredPassword) {
         String sql = "select id, mail, password from user where mail=? and password=?";
         PreparedStatement selectStatement;
 
@@ -74,9 +62,7 @@ public class OperateDatabase {
             selectStatement.setString(2, enteredPassword);
 
             ResultSet rs = selectStatement.executeQuery();
-            if(!rs.next()) {
-                System.out.println("Wrong E-Mail or Password!Try Again!\n");
-            } else {
+            if(rs.next()) {
                 return rs.getInt("id");
             }
         }catch (SQLException e) {
@@ -142,14 +128,14 @@ public class OperateDatabase {
                 selectBankStatement.setInt(1, bankIdResultSet.getInt("bank_id"));
                 ResultSet bankResultSet = selectBankStatement.executeQuery();
 
-                if(bankIdResultSet.next()) {
-                    System.out.print("Name: " + bankResultSet.getString("name"));
-                    System.out.print("Address: " + bankResultSet.getString("address"));
-                    System.out.print("Phone Number(s): " + bankResultSet.getString("phone_number"));
-                    System.out.print("Fax: " + bankResultSet.getString("fax"));
-                    System.out.print("E-Mail: " + bankResultSet.getString("mail"));
-                    System.out.print("Working Hours: " + bankResultSet.getString("working_hours"));
-                    System.out.print("Days Off: " + bankResultSet.getString("days_off"));
+                if(bankResultSet.next()) {
+                    System.out.println("Name: " + bankResultSet.getString("name"));
+                    System.out.println("Address: " + bankResultSet.getString("address"));
+                    System.out.println("Phone Number(s): " + bankResultSet.getString("phone_number"));
+                    System.out.println("Fax: " + bankResultSet.getString("fax"));
+                    System.out.println("E-Mail: " + bankResultSet.getString("mail"));
+                    System.out.println("Working Hours: " + bankResultSet.getString("working_hours"));
+                    System.out.println("Days Off: " + bankResultSet.getString("days_off"));
                     System.out.println();
                 }
             }
@@ -199,6 +185,7 @@ public class OperateDatabase {
                 System.out.println("E-Mail: " + bankResultSet.getString("mail"));
                 System.out.println("Working Hours: " + bankResultSet.getString("working_hours"));
                 System.out.println("Days Off: " + bankResultSet.getString("days_off"));
+                System.out.println();
             }
         }catch (SQLException e) {
             System.out.println("SQL Exception.");
@@ -216,6 +203,8 @@ public class OperateDatabase {
             while(serviceResultSet.next()) {
                 System.out.println(serviceResultSet.getString("name"));
             }
+
+            System.out.println();
         }catch (SQLException e) {
             System.out.println("SQL Exception.");
         }
@@ -223,7 +212,7 @@ public class OperateDatabase {
 
     public void showBalance(int userId) {
         String balanceSql = "select bank_id, balance from user_balance_bank where user_id=?";
-        String bankSql = "select name from bank where bank_id=?";
+        String bankSql = "select name from bank where id=?";
 
         PreparedStatement selectBalanceStatement;
         PreparedStatement selectBankStatement;
@@ -238,8 +227,8 @@ public class OperateDatabase {
                 ResultSet bankResultSet = selectBankStatement.executeQuery();
 
                 if(bankResultSet.next()) {
-                    System.out.println("You Have " + balanceResultSet.getInt("balance") + " in " +
-                            bankResultSet.getString("name") + ".");
+                    System.out.println("You Have " + balanceResultSet.getInt("balance") + "AMD in your " +
+                            bankResultSet.getString("name") + " account.");
                 }
             }
         }catch (SQLException e) {
@@ -265,13 +254,40 @@ public class OperateDatabase {
 
                 ResultSet balanceResultSet = selectBalanceStatement.executeQuery();
                 if(balanceResultSet.next()) {
-                    System.out.println("You have " + balanceResultSet.getInt("balance") + " in " +
-                                        bankName + ".");
+                    System.out.println("You have " + balanceResultSet.getInt("balance") + "AMD in your " +
+                                        bankName + " account.");
                 }
             }
         }catch (SQLException e) {
             System.out.println("SQL Exception.");
         }
+    }
+
+    public void showResponse(int userId) {
+        String responseSql = "select bank_id, response from account_request where user_id=? and response<>?";
+        PreparedStatement selectResponseStatemet;
+
+        String bankSql = "select name from bank where id=?";
+        PreparedStatement selectBankStatement;
+        try {
+            selectResponseStatemet = connection.prepareStatement(responseSql);
+            selectBankStatement = connection.prepareStatement(bankSql);
+            selectResponseStatemet.setInt(1, userId);
+            selectResponseStatemet.setString(2, "WAITING");
+            ResultSet responseResultSet = selectResponseStatemet.executeQuery();
+            while (responseResultSet.next()) {
+                selectBankStatement.setInt(1, responseResultSet.getInt("bank_id"));
+                ResultSet bankResultSet = selectBankStatement.executeQuery();
+                if(bankResultSet.next()) {
+                    System.out.println("The " + bankResultSet.getString("name") + " " +
+                                        responseResultSet.getString("response").toLowerCase() +
+                                        " Your Account Request.");
+                }
+            }
+        }catch (SQLException e) {
+            System.out.println("SQL Exception.");
+        }
+
     }
 
     public List<String> getUserBankList(int userId) {
@@ -318,5 +334,43 @@ public class OperateDatabase {
         }
 
         return banks;
+    }
+
+    public boolean isAccountPresent(int userId, int bankId) {
+        String sql = "select user_id from user_balance_bank where bank_id=?";
+        PreparedStatement selectBankStatement;
+        try {
+            selectBankStatement = connection.prepareStatement(sql);
+            selectBankStatement.setInt(1, bankId);
+            ResultSet bankIdResultSet = selectBankStatement.executeQuery();
+
+            while(bankIdResultSet.next()) {
+                int id = bankIdResultSet.getInt("user_id");
+                if(id == userId) {
+                    return true;
+                }
+            }
+        }catch (SQLException e) {
+            System.out.println("SQL Exception.");
+        }
+
+        return false;
+    }
+
+    public boolean isAccountPresent(int userId) {
+        String sql = "select user_id from user_balance_bank";
+        Statement selectBankStatement;
+        try {
+            selectBankStatement = connection.createStatement();
+            ResultSet userIdResultSet = selectBankStatement.executeQuery(sql);
+
+            if(userIdResultSet.next()) {
+                return true;
+            }
+        }catch (SQLException e) {
+            System.out.println("SQL Exception.");
+        }
+
+        return false;
     }
 }
